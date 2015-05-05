@@ -24,6 +24,7 @@ public class HomeActivity extends Activity {
         setContentView(R.layout.activity_home);
 
         GestureLayout bg = (GestureLayout) findViewById(R.id.bg);
+
         mediaPlayer = MediaPlayer.create(this, R.raw.first);
         mediaPlayer.start();
 
@@ -32,9 +33,9 @@ public class HomeActivity extends Activity {
             @Override
             public void onDoubleClick(int type) {
                 if(type == 1) {
-                    Toast.makeText(getApplicationContext(), "เบือกเส้นทางที่ 1", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "เลือกเส้นทางที่ 1", Toast.LENGTH_SHORT).show();
                 }else {
-                    Toast.makeText(getApplicationContext(), "เบือกเส้นทางที่ 2", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "เลือกเส้นทางที่ 2", Toast.LENGTH_SHORT).show();
                 }
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);

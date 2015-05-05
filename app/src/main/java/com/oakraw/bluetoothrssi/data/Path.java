@@ -19,13 +19,14 @@ public class Path {
         route1.add(new Node(new Pair<Integer, Integer>(7,3), R.raw.right));
         route1.add(new Node(new Pair<Integer, Integer>(5,3), R.raw.straight));
         route1.add(new Node(new Pair<Integer, Integer>(3,3), R.raw.left));
-        route1.add(new Node(new Pair<Integer, Integer>(3, 1), R.raw.end));
+        route1.add(new Node(new Pair<Integer, Integer>(3,1), R.raw.end));
 
         route2 = new ArrayList<>();
 
-        route2.add(new Node(new Pair<Integer, Integer>(7,3), R.raw.straight));
+        route2.add(new Node(new Pair<Integer, Integer>(3,1), R.raw.tworight));
+        route2.add(new Node(new Pair<Integer, Integer>(3,3), R.raw.right));
         route2.add(new Node(new Pair<Integer, Integer>(5,3), R.raw.straight));
-        route2.add(new Node(new Pair<Integer, Integer>(3,3), R.raw.end));
+        route2.add(new Node(new Pair<Integer, Integer>(7,3), R.raw.end));
 
     }
 }
