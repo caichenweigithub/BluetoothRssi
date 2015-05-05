@@ -2,7 +2,7 @@
 <resources>
 
     <string name="action_settings">Settings</string>
-    <string name="app_name">Bluetooth LE Scanner</string>
+    <string name="app_name">Guild me</string>
     <string name="connected">Connected</string>
     <string name="disconnected">Disconnected</string>
     <string name="invalid_device_data">Invalid Device Data!</string>
@@ -67,5 +67,8 @@
     <string name="label_state">State:</string>
     <string name="label_tx_power">TX Power:</string>
     <string name="label_uuid">UUID:</string>
+    <string name="title_activity_home">HomeActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 
 </resources>

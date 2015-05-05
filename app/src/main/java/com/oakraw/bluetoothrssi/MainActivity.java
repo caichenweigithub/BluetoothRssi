@@ -1,13 +1,12 @@
 package com.oakraw.bluetoothrssi;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.SQLException;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.SpannableString;
@@ -19,13 +18,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.oakraw.bluetoothrssi.adapters.LeDeviceListAdapter;
 import com.oakraw.bluetoothrssi.containers.BluetoothLeDeviceStore;
 import com.oakraw.bluetoothrssi.data.CoordinateData;
 import com.oakraw.bluetoothrssi.data.DataBaseHelper;
 import com.oakraw.bluetoothrssi.data.Distance;
+import com.oakraw.bluetoothrssi.data.Path;
 import com.oakraw.bluetoothrssi.util.BluetoothLeScanner;
 import com.oakraw.bluetoothrssi.util.BluetoothUtils;
 
@@ -45,9 +44,18 @@ public class MainActivity extends ListActivity {
     private BluetoothLeScanner mScanner;
     private LeDeviceListAdapter mLeDeviceListAdapter;
     private CoordinateData coorData;
+    private final int DELAY_TIME = 3000;
 
     final Handler handler = new Handler();
     Runnable runnable = new Runnable() {
+        private boolean isInArea(Pair<Integer, Integer> dest, Pair<Integer, Integer> coor){
+            if(coor.first >= dest.first - 1 && coor.first <= dest.first + 1 &&
+                    coor.second >= dest.second - 1 && coor.second <= dest.second + 1){
+                return true;
+            }
+            return false;
+        }
+
         @Override
         public void run() {
             // Do something after 5s = 5000ms
@@ -70,18 +78,38 @@ public class MainActivity extends ListActivity {
                     if(Distance.d1 == -1 && Distance.d2 == -1 && Distance.d3 == -1){
                         coordinateTv.setText("");
                     }else{
-                        coordinateTv.setText(da + " " + db + " " + dc + " coor:" + calculate(Distance.d1, Distance.d2, Distance.d3));
-                    }
+                        Pair<Integer,Integer> coor = calculate(Distance.d1, Distance.d2, Distance.d3);
+                        coordinateTv.setText(da + " " + db + " " + dc + " coor| " + "x: "+coor.first+" y: "+coor.second);
+                        if(Path.selectedRoute.size() != 0) {
+                            if (isInArea(Path.route1.get(0).getCoor(), coor)) {
+                                if (mediaPlayer.isPlaying()) {
+                                    mediaPlayer.stop();
+                                }
+                                mediaPlayer = MediaPlayer.create(getApplicationContext(), Path.route1.get(0).getSound());
+                                mediaPlayer.start();
+                                Path.route1.remove(0);
+                                coordinateTv.setText(coordinateTv.getText() + " detected");
+                            }
 
-                    handler.postDelayed(runnable, 1000);
+                        }
+                    }
+                    if(mScanner != null) {
+                        mScanner.scanLeDevice(-1, false);
+                    }
+                    invalidateOptionsMenu();
+
+                    startScan();
+
+                    handler.postDelayed(runnable, DELAY_TIME);
                 }
             });
         }
     };
+    private MediaPlayer mediaPlayer;
 
     //private Pair<Integer, Double> minimumD;
 
-    private String calculate(double da, double db, double dc){
+    private Pair<Integer,Integer> calculate(double da, double db, double dc){
         Pair<Integer, Double> minimumD = new Pair<>(100, 10000000d);
         for(int i=0 ; i< coorData.coor.size(); i++){
             double d1 = coorData.coor.get(i).distance1;
@@ -98,7 +126,7 @@ public class MainActivity extends ListActivity {
             }
         }
 
-        return "x:"+coorData.coor.get(minimumD.first).x+" y:"+coorData.coor.get(minimumD.first).y;
+        return new Pair<Integer,Integer>(coorData.coor.get(minimumD.first).x, coorData.coor.get(minimumD.first).y);
     }
 
     private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
@@ -157,6 +185,15 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        int type = getIntent().getIntExtra("route",0);
+        if(type == 1){
+            Path.selectedRoute = Path.route1;
+            mediaPlayer = MediaPlayer.create(this, R.raw.routeone);
+        }else{
+            Path.selectedRoute = Path.route2;
+            mediaPlayer = MediaPlayer.create(this, R.raw.routetwo);
+        }
+
         coorData =  new CoordinateData();
 
         mTvBluetoothLeStatus = (TextView)findViewById(R.id.tvBluetoothLe);
@@ -171,6 +208,8 @@ public class MainActivity extends ListActivity {
 
         DataBaseHelper myDbHelper;
         myDbHelper = new DataBaseHelper(this);
+
+        mediaPlayer.start();
 
         try {
 
@@ -192,8 +231,9 @@ public class MainActivity extends ListActivity {
 
         }
 
+        startScan();
 
-        handler.postDelayed(runnable, 1000);
+        handler.postDelayed(runnable, DELAY_TIME);
 
     }
 

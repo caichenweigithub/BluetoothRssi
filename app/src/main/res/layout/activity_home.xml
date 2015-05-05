@@ -1,0 +1,15 @@
+<com.oakraw.bluetoothrssi.custom.GestureLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:foreground="@drawable/button_change">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Route1 -> press1tap \n\n Route2 -> press2taps"
+        android:gravity="center"
+        android:textSize="28sp"
+        />
+
+</com.oakraw.bluetoothrssi.custom.GestureLayout>
