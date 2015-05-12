@@ -81,13 +81,13 @@ public class MainActivity extends ListActivity {
                         Pair<Integer,Integer> coor = calculate(Distance.d1, Distance.d2, Distance.d3);
                         coordinateTv.setText(da + " " + db + " " + dc + " coor| " + "x: "+coor.first+" y: "+coor.second);
                         if(Path.selectedRoute.size() != 0) {
-                            if (isInArea(Path.route1.get(0).getCoor(), coor)) {
+                            if (isInArea(Path.selectedRoute.get(0).getCoor(), coor)) {
                                 if (mediaPlayer.isPlaying()) {
                                     mediaPlayer.stop();
                                 }
-                                mediaPlayer = MediaPlayer.create(getApplicationContext(), Path.route1.get(0).getSound());
+                                mediaPlayer = MediaPlayer.create(getApplicationContext(), Path.selectedRoute.get(0).getSound());
                                 mediaPlayer.start();
-                                Path.route1.remove(0);
+                                Path.selectedRoute.remove(0);
                                 coordinateTv.setText(coordinateTv.getText() + " detected");
                             }
 
